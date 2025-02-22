@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
 import Projects from "@/pages/Projects";
 import Bookshelf from "@/pages/Bookshelf";
 
@@ -17,6 +18,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
+          <Route path="/blog/:slug" component={BlogPost} />
           <Route path="/projects" component={Projects} />
           <Route path="/bookshelf" component={Bookshelf} />
           <Route component={NotFound} />

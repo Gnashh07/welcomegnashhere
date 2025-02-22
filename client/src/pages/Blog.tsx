@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import type { BlogPost } from "@shared/schema";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
 
 export default function Blog() {
   const { data: posts, isLoading } = useQuery<BlogPost[]>({
@@ -18,33 +17,32 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <h1 className="text-4xl font-bold mb-8 text-center">Blog Posts</h1>
-
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto">
+      <div className="space-y-8">
         {posts?.map((post) => (
-          <Card key={post.id} className="hover:bg-accent/5 transition-colors duration-200">
-            <CardHeader>
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-2xl font-semibold">{post.title}</h2>
-                <time className="text-sm text-muted-foreground">
-                  {format(new Date(post.date), "MMMM dd, yyyy")}
-                </time>
-              </div>
-              <div className="flex gap-2">
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground whitespace-pre-wrap">
-                {post.content}
-              </p>
-            </CardContent>
-          </Card>
+          <article key={post.id} className="border-b border-border pb-8">
+            <div className="flex items-baseline justify-between mb-2">
+              <Link href={`/blog/${post.slug}`} className="group">
+                <h2 className="text-2xl font-mono group-hover:text-primary transition-colors">
+                  {post.title}
+                </h2>
+              </Link>
+              <time className="text-sm text-muted-foreground font-mono">
+                {new Date(post.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {post.tags.map((tag) => (
+                <Badge key={tag} variant="outline" className="font-mono text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </article>
         ))}
       </div>
     </div>
