@@ -29,8 +29,8 @@ export default function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 max-w-3xl mx-auto">
-      <article className="prose prose-invert mx-auto">
+    <div className="min-h-screen flex justify-center">
+      <article className="w-full max-w-2xl px-4 py-16 prose prose-invert">
         <h1 className="text-4xl font-mono mb-2">{post.title}</h1>
         <div className="flex items-center gap-4 mb-8">
           <time className="text-sm text-muted-foreground font-mono">
