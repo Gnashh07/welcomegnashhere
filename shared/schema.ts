@@ -3,10 +3,12 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const blogPosts = pgTable("blog_posts", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey(), // Using text for ID to match the file slug
   title: text("title").notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  date: text("date").notNull(),
+  tags: text("tags").array().notNull(),
+  slug: text("slug").notNull(),
 });
 
 export const projects = pgTable("projects", {
@@ -25,7 +27,7 @@ export const books = pgTable("books", {
   review: text("review"),
 });
 
-export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: true, createdAt: true });
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: true });
 export const insertProjectSchema = createInsertSchema(projects).omit({ id: true });
 export const insertBookSchema = createInsertSchema(books).omit({ id: true });
 

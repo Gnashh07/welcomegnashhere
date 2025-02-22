@@ -1,44 +1,20 @@
 import { users, type User, type InsertUser } from "@shared/schema";
 import { blogPosts, projects, books } from "@shared/schema";
 import type { BlogPost, Project, Book, InsertBlogPost, InsertProject, InsertBook } from "@shared/schema";
-
-// modify the interface with any CRUD methods
-// you might need
+import { readBlogPosts } from "./utils/blog-reader";
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
   getAllBlogPosts(): Promise<BlogPost[]>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
   getAllProjects(): Promise<Project[]>;
   getAllBooks(): Promise<Book[]>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private blogPosts: BlogPost[];
   private projects: Project[];
   private books: Book[];
-  currentId: number;
 
   constructor() {
-    this.users = new Map();
-    this.currentId = 1;
-    this.blogPosts = [
-      {
-        id: 1,
-        title: "Getting Started with React",
-        content: "React is a powerful library for building user interfaces...",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        title: "The Power of TypeScript",
-        content: "TypeScript adds static typing to JavaScript...",
-        createdAt: new Date().toISOString(),
-      },
-    ];
-
     this.projects = [
       {
         id: 1,
@@ -74,25 +50,13 @@ export class MemStorage implements IStorage {
     ];
   }
 
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
-  }
-
   async getAllBlogPosts(): Promise<BlogPost[]> {
-    return this.blogPosts;
+    return readBlogPosts();
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const posts = await this.getAllBlogPosts();
+    return posts.find(post => post.slug === slug);
   }
 
   async getAllProjects(): Promise<Project[]> {
