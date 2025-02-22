@@ -1,6 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format } from "date-fns";
 import type { BlogPost } from "@shared/schema";
 
 export default function Blog() {
@@ -9,27 +7,16 @@ export default function Blog() {
   });
 
   if (isLoading) {
-    return <div>Loading posts...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Blog Posts</h1>
-      <div className="space-y-4">
+    <div className="min-h-screen flex flex-col items-center justify-center text-center p-4">
+      <div className="space-y-6">
         {posts?.map((post) => (
-          <Card key={post.id}>
-            <CardHeader>
-              <CardTitle>{post.title}</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                {format(new Date(post.createdAt), "MMMM d, yyyy")}
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="prose dark:prose-invert">
-                {post.content}
-              </div>
-            </CardContent>
-          </Card>
+          <h2 key={post.id} className="text-2xl hover:text-primary transition-colors cursor-pointer">
+            {post.title}
+          </h2>
         ))}
       </div>
     </div>
