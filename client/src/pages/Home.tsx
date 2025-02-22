@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import SocialLinks from "@/components/SocialLinks";
 
 export default function Home() {
   return (
@@ -31,6 +32,9 @@ export default function Home() {
           </a>
         </Link>
       </nav>
+      <div className="mt-4">
+        <SocialLinks />
+      </div>
       <footer className="absolute bottom-4 text-sm text-muted-foreground">
         © 2024 GnashHere. All Rights Reserved.
       </footer>

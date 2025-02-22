@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import SocialLinks from "@/components/SocialLinks";
 
 export default function About() {
   const timelineItems = [
@@ -33,10 +32,6 @@ export default function About() {
         <p className="font-mono text-orange-400 text-center mt-8">
           Reach out to me to know more!!
         </p>
-      </div>
-
-      <div className="mt-12">
-        <SocialLinks />
       </div>
     </div>
   );
