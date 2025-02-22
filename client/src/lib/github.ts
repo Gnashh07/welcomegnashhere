@@ -10,7 +10,7 @@ export interface GitHubRepo {
 }
 
 export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
-  const username = "gnashhere"; // Your GitHub username
+  const username = "gnashxnax"; // Updated GitHub username to match your X handle
 
   try {
     // First verify if we have access to the token
@@ -25,7 +25,7 @@ export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
       `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `token ${token}`, // Changed Bearer to token
           Accept: "application/vnd.github.v3+json",
         },
       }
