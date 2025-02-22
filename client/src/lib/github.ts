@@ -3,17 +3,18 @@ import { apiRequest } from "./queryClient";
 export interface GitHubRepo {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   html_url: string;
   stargazers_count: number;
-  language: string;
+  language: string | null;
+  fork: boolean;
+  archived: boolean;
 }
 
 export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
-  const username = "gnashxnax"; // Updated GitHub username to match your X handle
+  const username = "Gnashh07"; 
 
   try {
-    // First verify if we have access to the token
     const tokenResponse = await apiRequest("GET", "/api/github/token");
     if (!tokenResponse.ok) {
       throw new Error("GitHub token not configured");
@@ -25,7 +26,7 @@ export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
       `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
       {
         headers: {
-          Authorization: `token ${token}`, // Changed Bearer to token
+          Authorization: `Bearer ${token}`, 
           Accept: "application/vnd.github.v3+json",
         },
       }
@@ -39,8 +40,9 @@ export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
 
     const repos = await response.json();
     return repos
-      .filter((repo: GitHubRepo) => !repo.description?.includes("private"))
-      .sort((a: GitHubRepo, b: GitHubRepo) => b.stargazers_count - a.stargazers_count);
+      .filter((repo: GitHubRepo) => !repo.fork && !repo.archived)
+      .sort((a: GitHubRepo, b: GitHubRepo) => b.stargazers_count - a.stargazers_count)
+      .slice(0, 6); 
   } catch (error) {
     console.error("Error fetching GitHub repos:", error);
     throw error;
