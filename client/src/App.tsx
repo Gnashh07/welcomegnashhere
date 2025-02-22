@@ -3,8 +3,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
-import Navbar from "@/components/Navbar";
 import Home from "@/pages/Home";
+import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import Projects from "@/pages/Projects";
 import Bookshelf from "@/pages/Bookshelf";
@@ -15,13 +15,13 @@ function Router() {
       <main>
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
           <Route path="/projects" component={Projects} />
           <Route path="/bookshelf" component={Bookshelf} />
           <Route component={NotFound} />
         </Switch>
       </main>
-      <Navbar />
     </div>
   );
 }
