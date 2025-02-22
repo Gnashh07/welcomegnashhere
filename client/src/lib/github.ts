@@ -13,19 +13,28 @@ export async function fetchGitHubRepos(): Promise<GitHubRepo[]> {
   const username = "gnashhere"; // Your GitHub username
 
   try {
+    // First verify if we have access to the token
+    const tokenResponse = await apiRequest("GET", "/api/github/token");
+    if (!tokenResponse.ok) {
+      throw new Error("GitHub token not configured");
+    }
+
+    const { token } = await tokenResponse.json();
+
     const response = await fetch(
       `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
       {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+          Authorization: `Bearer ${token}`,
           Accept: "application/vnd.github.v3+json",
         },
       }
     );
 
     if (!response.ok) {
-      console.error("GitHub API Error:", await response.text());
-      throw new Error("Failed to fetch GitHub repositories");
+      const errorText = await response.text();
+      console.error("GitHub API Error:", errorText);
+      throw new Error(`Failed to fetch GitHub repositories: ${response.status}`);
     }
 
     const repos = await response.json();
