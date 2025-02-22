@@ -9,10 +9,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(posts);
   });
 
-  // Projects routes
-  app.get("/api/projects", async (_req, res) => {
-    const projects = await storage.getAllProjects();
-    res.json(projects);
+  // GitHub token verification
+  app.get("/api/github/token", (_req, res) => {
+    if (!process.env.GITHUB_TOKEN) {
+      res.status(401).json({ message: "GitHub token not configured" });
+      return;
+    }
+    res.json({ token: process.env.GITHUB_TOKEN });
   });
 
   // Books routes

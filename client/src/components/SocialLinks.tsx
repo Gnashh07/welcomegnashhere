@@ -3,17 +3,17 @@ import { SiX, SiLinkedin, SiInstagram } from "react-icons/si";
 export default function SocialLinks() {
   const socialLinks = [
     {
-      href: "https://twitter.com/gnashhere",
+      href: "https://x.com/gnashxnax",
       icon: SiX,
       label: "X (Twitter)",
     },
     {
-      href: "https://linkedin.com/in/gnashhere",
+      href: "https://www.linkedin.com/in/ganeshpulipaka001/",
       icon: SiLinkedin,
       label: "LinkedIn",
     },
     {
-      href: "https://instagram.com/gnashhere",
+      href: "https://www.instagram.com/gnashhh_",
       icon: SiInstagram,
       label: "Instagram",
     },
