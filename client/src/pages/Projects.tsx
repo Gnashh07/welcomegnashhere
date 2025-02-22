@@ -1,16 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { fetchGitHubRepos, type GitHubRepo } from "@/lib/github";
 import { SiGithub } from "react-icons/si";
+import { AlertCircle } from "lucide-react";
 
 export default function Projects() {
-  const { data: repos, isLoading } = useQuery<GitHubRepo[]>({
+  const { data: repos, isLoading, error } = useQuery<GitHubRepo[]>({
     queryKey: ["/github/repos"],
     queryFn: fetchGitHubRepos,
   });
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Loading projects...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md mx-4">
+          <CardContent className="pt-6 flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-destructive" />
+            <p className="text-destructive">Failed to load projects. Please try again later.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
