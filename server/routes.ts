@@ -9,6 +9,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(posts);
   });
 
+  app.get("/api/blog-posts/:slug", async (req, res) => {
+    const post = await storage.getBlogPostBySlug(req.params.slug);
+    if (!post) {
+      res.status(404).json({ message: "Blog post not found" });
+      return;
+    }
+    res.json(post);
+  });
+
+  app.delete("/api/blog-posts/:slug", async (req, res) => {
+    try {
+      await storage.deleteBlogPost(req.params.slug);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
+    }
+  });
+
   // GitHub token verification
   app.get("/api/github/token", (_req, res) => {
     if (!process.env.GITHUB_TOKEN) {
