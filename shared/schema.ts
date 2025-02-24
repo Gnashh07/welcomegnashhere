@@ -11,14 +11,6 @@ export const blogPosts = pgTable("blog_posts", {
   slug: text("slug").notNull(),
 });
 
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  imageUrl: text("image_url").notNull(),
-  githubUrl: text("github_url").notNull(),
-});
-
 export const books = pgTable("books", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -27,14 +19,16 @@ export const books = pgTable("books", {
   review: text("review"),
 });
 
+// Updated schemas to include necessary fields for update operations
 export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: true });
-export const insertProjectSchema = createInsertSchema(projects).omit({ id: true });
+export const updateBlogPostSchema = createInsertSchema(blogPosts);
 export const insertBookSchema = createInsertSchema(books).omit({ id: true });
+export const updateBookSchema = createInsertSchema(books);
 
 export type BlogPost = typeof blogPosts.$inferSelect;
-export type Project = typeof projects.$inferSelect;
 export type Book = typeof books.$inferSelect;
 
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
-export type InsertProject = z.infer<typeof insertProjectSchema>;
+export type UpdateBlogPost = z.infer<typeof updateBlogPostSchema>;
 export type InsertBook = z.infer<typeof insertBookSchema>;
+export type UpdateBook = z.infer<typeof updateBookSchema>;
