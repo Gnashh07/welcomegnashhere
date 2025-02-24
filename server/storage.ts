@@ -1,6 +1,7 @@
 import { blogPosts, books } from "@shared/schema";
 import type { BlogPost, Book, InsertBlogPost, InsertBook, UpdateBlogPost, UpdateBook } from "@shared/schema";
 import { readBlogPosts } from "./utils/blog-reader";
+import { readBooks } from "./utils/book-reader";
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -13,34 +14,12 @@ export interface IStorage {
 
   // Book operations
   getAllBooks(): Promise<Book[]>;
-  getBook(id: number): Promise<Book | undefined>;
-  createBook(book: InsertBook): Promise<Book>;
-  updateBook(id: number, book: UpdateBook): Promise<Book>;
+  addBook(title: string, author: string, imageUrl: string, review: string): Promise<void>;
   deleteBook(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
-  private books: Book[] = [
-    {
-      id: 1,
-      title: "The Pragmatic Programmer",
-      author: "David Thomas, Andrew Hunt",
-      imageUrl: "https://example.com/pragmatic.jpg",
-      review: "A must-read for every developer",
-    },
-    {
-      id: 2,
-      title: "Clean Code",
-      author: "Robert C. Martin",
-      imageUrl: "https://example.com/clean-code.jpg",
-      review: "Excellent principles for writing maintainable code",
-    },
-  ];
-
-  private getNextBookId(): number {
-    return Math.max(...this.books.map(book => book.id), 0) + 1;
-  }
-
+  // Blog operations
   async getAllBlogPosts(): Promise<BlogPost[]> {
     return readBlogPosts();
   }
@@ -60,33 +39,42 @@ export class MemStorage implements IStorage {
     await fs.unlink(filePath);
   }
 
+  // Book operations
   async getAllBooks(): Promise<Book[]> {
-    return this.books;
+    return readBooks();
   }
 
-  async getBook(id: number): Promise<Book | undefined> {
-    return this.books.find(book => book.id === id);
-  }
+  async addBook(title: string, author: string, imageUrl: string, review: string): Promise<void> {
+    const booksDir = path.join(process.cwd(), 'server', 'books');
+    const timestamp = Date.now();
+    const filename = `${timestamp}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.txt`;
+    const filePath = path.join(booksDir, filename);
 
-  async createBook(book: InsertBook): Promise<Book> {
-    const newBook = { ...book, id: this.getNextBookId() };
-    this.books.push(newBook);
-    return newBook;
-  }
+    const content = `TITLE: ${title}
+AUTHOR: ${author}
+IMAGE_URL: ${imageUrl}
+---
+${review}`;
 
-  async updateBook(id: number, updateData: UpdateBook): Promise<Book> {
-    const index = this.books.findIndex(book => book.id === id);
-    if (index === -1) throw new Error('Book not found');
-
-    const updatedBook = { ...this.books[index], ...updateData };
-    this.books[index] = updatedBook;
-    return updatedBook;
+    await fs.writeFile(filePath, content, 'utf-8');
   }
 
   async deleteBook(id: number): Promise<void> {
-    const index = this.books.findIndex(book => book.id === id);
-    if (index !== -1) {
-      this.books.splice(index, 1);
+    const books = await this.getAllBooks();
+    const book = books.find(b => b.id === id);
+    if (!book) return;
+
+    const booksDir = path.join(process.cwd(), 'server', 'books');
+    const files = await fs.readdir(booksDir);
+
+    // Find and delete the corresponding file
+    for (const file of files) {
+      const filePath = path.join(booksDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+      if (content.includes(`TITLE: ${book.title}`)) {
+        await fs.unlink(filePath);
+        break;
+      }
     }
   }
 }

@@ -39,27 +39,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Books routes
   app.get("/api/books", async (_req, res) => {
-    const books = await storage.getAllBooks();
-    res.json(books);
+    try {
+      const books = await storage.getAllBooks();
+      res.json(books);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      res.status(500).json({ message: "Failed to fetch books" });
+    }
   });
 
   app.post("/api/books", async (req, res) => {
     try {
-      const book = await storage.createBook(req.body);
-      res.status(201).json(book);
+      const { title, author, imageUrl, review } = req.body;
+      await storage.addBook(title, author, imageUrl, review);
+      const books = await storage.getAllBooks();
+      res.status(201).json(books);
     } catch (error) {
       console.error("Error creating book:", error);
       res.status(500).json({ message: "Failed to create book" });
-    }
-  });
-
-  app.patch("/api/books/:id", async (req, res) => {
-    try {
-      const book = await storage.updateBook(Number(req.params.id), req.body);
-      res.json(book);
-    } catch (error) {
-      console.error("Error updating book:", error);
-      res.status(500).json({ message: "Failed to update book" });
     }
   });
 
