@@ -43,6 +43,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(books);
   });
 
+  app.post("/api/books", async (req, res) => {
+    try {
+      const book = await storage.createBook(req.body);
+      res.status(201).json(book);
+    } catch (error) {
+      console.error("Error creating book:", error);
+      res.status(500).json({ message: "Failed to create book" });
+    }
+  });
+
+  app.patch("/api/books/:id", async (req, res) => {
+    try {
+      const book = await storage.updateBook(Number(req.params.id), req.body);
+      res.json(book);
+    } catch (error) {
+      console.error("Error updating book:", error);
+      res.status(500).json({ message: "Failed to update book" });
+    }
+  });
+
+  app.delete("/api/books/:id", async (req, res) => {
+    try {
+      await storage.deleteBook(Number(req.params.id));
+      res.sendStatus(200);
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      res.status(500).json({ message: "Failed to delete book" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
