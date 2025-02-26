@@ -1,6 +1,0 @@
-TITLE: Clean Code
-AUTHOR: Robert C. Martin
-IMAGE_URL: https://example.com/clean-code.jpg
-REVIEW: Excellent principles for writing maintainable code
----
-A comprehensive guide to writing clean and maintainable code. This book has fundamentally changed how I approach software development.

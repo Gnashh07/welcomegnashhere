@@ -1,13 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { fetchGitHubRepos, type GitHubRepo } from "@/lib/github";
 import { SiGithub } from "react-icons/si";
 import { Star } from "lucide-react";
 
+interface GitHubRepo {
+  id: number;
+  name: string;
+  html_url: string;
+  language: string;
+  stargazers_count: number;
+}
+
 export default function Projects() {
   const { data: repos, isLoading, error } = useQuery<GitHubRepo[]>({
-    queryKey: ["/github/repos"],
-    queryFn: fetchGitHubRepos,
+    queryKey: ["github-repos"],
+    queryFn: async () => {
+      const response = await fetch("https://api.github.com/users/Gnashh07/repos");
+      if (!response.ok) throw new Error("GitHub API request failed");
+      return response.json();
+    },
+    staleTime: 86400000, // Cache for 24 hours (prevents unnecessary API calls)
   });
 
   if (isLoading) {
@@ -18,10 +30,10 @@ export default function Projects() {
     );
   }
 
-  if (error) {
+  if (error || !repos) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-destructive">Failed to load projects. Please try again later.</div>
+        <p className="text-destructive">⚠️ Failed to load projects. Please try again later.</p>
       </div>
     );
   }
@@ -31,7 +43,7 @@ export default function Projects() {
       <h1 className="text-4xl font-bold mb-8 text-center">My Projects</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-        {repos?.map((repo) => (
+        {repos.map((repo) => (
           <Card key={repo.id} className="bg-card hover:bg-accent/5 transition-colors duration-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -42,10 +54,6 @@ export default function Projects() {
                   </span>
                 )}
               </div>
-
-              <p className="text-muted-foreground mb-6 text-sm">
-                {repo.description || "No description available"}
-              </p>
 
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <a

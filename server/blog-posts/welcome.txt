@@ -1,9 +1,0 @@
-TITLE: Welcome to My Blog
-DATE: 2024-02-22
-TAGS: introduction,personal
----
-Hello and welcome to my blog! This is where I share my thoughts on technology, development, and my journey as a software engineer.
-
-I'll be posting regular updates about my projects, learnings, and experiences in the tech world.
-
-Stay tuned for more content!
