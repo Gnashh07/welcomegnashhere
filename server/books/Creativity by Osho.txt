@@ -1,5 +1,5 @@
-TITLE: Creativity by Osho
-AUTHOR: Robert C. Martin
+TITLE: Creativity 
+AUTHOR: Osho
 IMAGE_URL: 
 REVIEW: A blend between philosophy and spirituality to tackle Creativity 
 ---
